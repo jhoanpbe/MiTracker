@@ -1,0 +1,807 @@
+/* =====================================================
+   CONFIGURACIÓN GENERAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+
+    --neon: #00ffc8;
+    --neon-dim: rgba(0, 255, 200, 0.35);
+
+    --magenta: #ff2ee0;
+
+    --bg-hondo: #05070a;
+
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --safe-left: env(safe-area-inset-left);
+    --safe-right: env(safe-area-inset-right);
+}
+
+
+/* =====================================================
+   HTML / BODY
+===================================================== */
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 100%;
+
+    background: var(--bg-hondo);
+
+    color: white;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow: hidden;
+
+    overscroll-behavior: none;
+
+    touch-action: manipulation;
+}
+
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+===================================================== */
+
+#container {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+    height: 100dvh;
+
+    min-width: 0;
+    min-height: 0;
+
+    background: #000;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   VIDEO Y CANVAS
+===================================================== */
+
+video,
+canvas {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+video {
+
+    z-index: 1;
+
+    background: #000;
+
+    transition:
+        filter .25s ease,
+        transform .2s ease;
+}
+
+
+canvas {
+
+    z-index: 5;
+
+    pointer-events: none;
+
+    image-rendering: auto;
+}
+
+
+/* =====================================================
+   ESPEJO
+===================================================== */
+
+video.mirror,
+canvas.mirror {
+
+    transform: scaleX(-1);
+}
+
+
+/* =====================================================
+   FLASH DE CAPTURA
+===================================================== */
+
+#flash {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: #fff;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 30;
+
+    transition:
+        opacity .15s ease;
+}
+
+
+#flash.activo {
+
+    opacity: .85;
+
+    transition:
+        opacity .05s ease;
+}
+
+
+/* =====================================================
+   MINIATURA
+===================================================== */
+
+#miniaturaCaptura {
+
+    position: absolute;
+
+    top:
+        calc(
+            16px +
+            var(--safe-top)
+        );
+
+    right:
+        calc(
+            16px +
+            var(--safe-right)
+        );
+
+    width: 80px;
+    height: 80px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    border:
+        2px solid
+        var(--neon);
+
+    box-shadow:
+        0 0 16px
+        var(--neon-dim),
+
+        0 4px 14px
+        rgba(0,0,0,.4);
+
+    z-index: 20;
+
+    opacity: 0;
+
+    transform: scale(.6);
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+    pointer-events: none;
+}
+
+
+#miniaturaCaptura.visible {
+
+    opacity: 1;
+
+    transform: scale(1);
+}
+
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+#topBar {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 10;
+
+    padding:
+        calc(16px + var(--safe-top))
+        calc(18px + var(--safe-right))
+        16px
+        calc(18px + var(--safe-left));
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.72),
+            transparent
+        );
+
+    pointer-events: none;
+}
+
+
+#topBar h1 {
+
+    margin: 0;
+
+    font-size:
+        clamp(
+            .9rem,
+            2vw,
+            1.25rem
+        );
+
+    letter-spacing: .1em;
+
+    font-weight: 700;
+
+    color: var(--neon);
+
+    text-shadow:
+        0 0 12px
+        var(--neon-dim);
+}
+
+
+#topBar p {
+
+    margin:
+        6px 0 0;
+
+    font-size:
+        clamp(
+            .72rem,
+            1.6vw,
+            .95rem
+        );
+
+    font-weight: 500;
+
+    opacity: .9;
+}
+
+
+.instruccionCaptura {
+
+    color:
+        rgba(255,255,255,.72);
+
+    max-width: 700px;
+}
+
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.buttons {
+
+    position: absolute;
+
+    left:
+        calc(
+            16px +
+            var(--safe-left)
+        );
+
+    right:
+        calc(
+            16px +
+            var(--safe-right)
+        );
+
+    bottom:
+        calc(
+            24px +
+            var(--safe-bottom)
+        );
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: stretch;
+
+    gap: 12px;
+
+    z-index: 15;
+}
+
+
+.buttons button {
+
+    flex: 1;
+
+    min-height: 46px;
+
+    max-width: 230px;
+
+    padding: 12px 16px;
+
+    border:
+        1px solid
+        var(--neon);
+
+    border-radius: 999px;
+
+    background:
+        rgba(5,7,10,.62);
+
+    color: var(--neon);
+
+    font-size:
+        clamp(
+            .72rem,
+            1.5vw,
+            .95rem
+        );
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(8px);
+
+    box-shadow:
+        0 0 14px
+        var(--neon-dim);
+
+    transition:
+        transform .12s ease,
+        background .12s ease;
+}
+
+
+.buttons button:active {
+
+    transform: scale(.96);
+
+    background:
+        rgba(0,255,200,.18);
+}
+
+
+/* =====================================================
+   PANTALLA COMPLETA
+===================================================== */
+
+#fullscreenButton {
+
+    display: none;
+}
+
+
+/* =====================================================
+   INDICADOR DE PLATAFORMA
+===================================================== */
+
+#platformBadge {
+
+    position: absolute;
+
+    top:
+        calc(
+            10px +
+            var(--safe-top)
+        );
+
+    right:
+        calc(
+            10px +
+            var(--safe-right)
+        );
+
+    z-index: 20;
+
+    padding: 5px 9px;
+
+    border:
+        1px solid
+        rgba(0,255,200,.35);
+
+    border-radius: 999px;
+
+    background:
+        rgba(5,7,10,.5);
+
+    color:
+        rgba(255,255,255,.75);
+
+    font-size: .58rem;
+
+    font-weight: 700;
+
+    letter-spacing: .08em;
+
+    backdrop-filter: blur(7px);
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   CELULAR
+===================================================== */
+
+@media (max-width: 700px) {
+
+    #topBar {
+
+        padding:
+            calc(10px + var(--safe-top))
+            calc(10px + var(--safe-right))
+            8px
+            calc(10px + var(--safe-left));
+    }
+
+
+    #topBar h1 {
+
+        font-size:
+            clamp(
+                .76rem,
+                4vw,
+                1rem
+            );
+    }
+
+
+    #topBar p {
+
+        font-size:
+            clamp(
+                .64rem,
+                3vw,
+                .8rem
+            );
+    }
+
+
+    .instruccionCaptura {
+
+        font-size:
+            clamp(
+                .58rem,
+                2.7vw,
+                .74rem
+            );
+    }
+
+
+    .buttons {
+
+        gap: 7px;
+
+        bottom:
+            calc(
+                10px +
+                var(--safe-bottom)
+            );
+    }
+
+
+    .buttons button {
+
+        min-height: 48px;
+
+        padding:
+            10px 8px;
+
+        font-size:
+            clamp(
+                .62rem,
+                3vw,
+                .82rem
+            );
+    }
+
+
+    #miniaturaCaptura {
+
+        top:
+            calc(
+                55px +
+                var(--safe-top)
+            );
+
+        right:
+            calc(
+                10px +
+                var(--safe-right)
+            );
+
+        width: 62px;
+        height: 62px;
+    }
+}
+
+
+/* =====================================================
+   CELULAR HORIZONTAL
+===================================================== */
+
+@media
+(max-width: 900px)
+and (orientation: landscape) {
+
+    #topBar {
+
+        max-width: 58%;
+
+        padding-top:
+            calc(
+                8px +
+                var(--safe-top)
+            );
+    }
+
+
+    #topBar h1 {
+
+        font-size: .8rem;
+    }
+
+
+    #topBar p {
+
+        margin-top: 3px;
+
+        font-size: .68rem;
+    }
+
+
+    .instruccionCaptura {
+
+        display: none;
+    }
+
+
+    .buttons {
+
+        left: auto;
+
+        right:
+            calc(
+                10px +
+                var(--safe-right)
+            );
+
+        width:
+            min(
+                48vw,
+                420px
+            );
+
+        bottom:
+            calc(
+                8px +
+                var(--safe-bottom)
+            );
+    }
+
+
+    .buttons button {
+
+        min-height: 40px;
+    }
+
+
+    #miniaturaCaptura {
+
+        top:
+            calc(
+                8px +
+                var(--safe-top)
+            );
+    }
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media
+(min-width: 701px)
+and (max-width: 1199px) {
+
+    .buttons {
+
+        bottom:
+            calc(
+                20px +
+                var(--safe-bottom)
+            );
+    }
+
+
+    .buttons button {
+
+        max-width: 220px;
+    }
+}
+
+
+/* =====================================================
+   PC / LAPTOP
+===================================================== */
+
+@media (min-width: 1200px) {
+
+    #fullscreenButton {
+
+        display: block;
+    }
+
+
+    #topBar {
+
+        padding:
+            22px 26px;
+    }
+
+
+    #topBar h1 {
+
+        font-size: 1.2rem;
+    }
+
+
+    #topBar p {
+
+        font-size: 1rem;
+    }
+
+
+    .buttons {
+
+        left: 50%;
+        right: auto;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            min(
+                760px,
+                80vw
+            );
+
+        bottom: 30px;
+    }
+
+
+    .buttons button {
+
+        flex: 1 1 0;
+
+        max-width: 250px;
+    }
+}
+
+
+/* =====================================================
+   PANTALLAS TÁCTILES
+===================================================== */
+
+@media (pointer: coarse) {
+
+    .buttons button {
+
+        min-height: 48px;
+    }
+}
+
+
+/* =====================================================
+   PANTALLAS BAJAS
+===================================================== */
+
+@media (max-height: 600px) {
+
+    #topBar {
+
+        padding-top:
+            calc(
+                6px +
+                var(--safe-top)
+            );
+    }
+
+
+    #topBar p {
+
+        margin-top: 2px;
+    }
+
+
+    .buttons {
+
+        bottom:
+            calc(
+                6px +
+                var(--safe-bottom)
+            );
+    }
+
+
+    .buttons button {
+
+        min-height: 38px;
+
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+}
+
+
+/* =====================================================
+   TABLET / PC TOUCH
+===================================================== */
+
+body.is-mobile #container {
+
+    min-height: 100svh;
+}
+
+
+body.is-tablet #container {
+
+    min-height: 100svh;
+}
+
+
+body.is-desktop #container {
+
+    min-height: 100vh;
+}
+
+
+/* =====================================================
+   EVITAR SELECCIONES ACCIDENTALES
+===================================================== */
+
+button,
+img,
+video,
+canvas {
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+}
